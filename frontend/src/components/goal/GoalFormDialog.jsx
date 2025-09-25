@@ -41,6 +41,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
+import { toast } from "react-toastify";
 
 const goalSchema = z
   .object({
@@ -102,11 +103,29 @@ const GoalFormDialog = ({ open, onOpenChange, goal }) => {
     },
   });
 
+  async function handleAddGoal(data) {
+    try {
+      await addGoal(data);
+      toast.success("Goal added successfully.");
+    } catch (error) {
+      toast.error("Add goal failed, Please try again.");
+    }
+  }
+
+  async function handleEditGoal(_id, data) {
+    try {
+      await editGoal(_id, data);
+      toast.success("Goal edited successfully.");
+    } catch (error) {
+      toast.error("Edit goal failed, Please try again.");
+    }
+  }
+
   async function onSubmit(data) {
     if (goal) {
-      await editGoal(_id, data);
+      await handleEditGoal(_id, data);
     } else {
-      await addGoal(data);
+      await handleAddGoal(data);
     }
     onOpenChange(false);
     form.reset();

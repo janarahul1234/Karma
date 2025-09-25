@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { GoogleOAuthProvider } from "@react-oauth/google";
+import { toast } from "react-toastify";
 
 import {
   Mail,
@@ -29,6 +30,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import GoogleLogin from "@/components/partials/GoogleLogin";
+import { useTheme } from "@/context/themeContext";
 
 const loginSchema = z.object({
   email: z
@@ -58,6 +60,7 @@ export default function Login() {
       const response = await loginUser(data);
       const { user, token } = response.data;
 
+      toast.success("Login successfull.");
       localStorage.setItem("token", token);
       login(user);
       navigate("/");
@@ -72,6 +75,7 @@ export default function Login() {
           message: "Invalid password.",
         });
       } else {
+        toast.error("Login failed, Please try again.");
         console.error("Login error:", error);
       }
     }

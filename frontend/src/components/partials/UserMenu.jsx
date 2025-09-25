@@ -1,5 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { UserRound, LogOutIcon } from "lucide-react";
+import { toast } from "react-toastify";
 
 import useAuthStore from "@/stores/authStore";
 
@@ -21,6 +22,7 @@ export default function UserMenu() {
   const navigate = useNavigate();
 
   const handleLogout = () => {
+    toast.success("Logout successfully.");
     localStorage.removeItem("token");
     logout();
     navigate("/login");

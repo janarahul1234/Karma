@@ -13,6 +13,7 @@ import {
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
+import { toast } from "react-toastify";
 
 import useAuthStore from "@/stores/authStore";
 
@@ -78,6 +79,7 @@ const Register = () => {
       const response = await registerUser(data);
       const { user, token } = response.data;
 
+      toast.success("Register successfull.");
       localStorage.setItem("token", token);
       login(user);
       navigate("/");
@@ -88,6 +90,7 @@ const Register = () => {
           message: error?.response?.data?.message,
         });
       } else {
+        toast.error("Register failed, Please try again.");
         console.error("Register error:", error);
       }
     }

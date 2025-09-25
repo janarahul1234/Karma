@@ -8,6 +8,7 @@ import {
   PiggyBank,
   LoaderCircle,
 } from "lucide-react";
+import { toast } from "react-toastify";
 
 import useAuthStore from "@/stores/authStore";
 import useGoalStore from "@/stores/goalStore";
@@ -51,6 +52,8 @@ const Home = () => {
     try {
       await fetchGoals();
       await fetchTransactions();
+    } catch (error) {
+      toast.error("Fetch goals and transactions failed, Please try again.");
     } finally {
       setIsLoading(false);
     }

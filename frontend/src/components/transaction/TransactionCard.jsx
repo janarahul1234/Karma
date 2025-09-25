@@ -1,6 +1,7 @@
 import { lazy, useState } from "react";
 import { TrendingUp, TrendingDown, Trash2 } from "lucide-react";
 import { format } from "date-fns";
+import { toast } from "react-toastify";
 
 import useTransactionStore from "@/stores/transactionStore";
 
@@ -26,9 +27,14 @@ export default function TransactionCard({ transaction = {} }) {
     setDeleteTransactionOpen(true);
   }
 
-  function handleDeleteTransaction() {
-    deleteTransaction(_id);
-    setDeleteTransactionOpen(false);
+  async function handleDeleteTransaction() {
+    try {
+      await deleteTransaction(_id);
+      toast.success("Tranction deleted successfully.");
+      setDeleteTransactionOpen(false);
+    } catch (error) {
+      toast.error("Delete tranction failed, Please try again.");
+    }
   }
 
   const isSaving = type === "saving";

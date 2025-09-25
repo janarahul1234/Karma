@@ -2,6 +2,7 @@ import { IndianRupee, LoaderCircle } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
+import { toast } from "react-toastify";
 
 import useGoalStore from "@/stores/goalStore";
 
@@ -49,9 +50,14 @@ const AddSavingsDialog = ({ open, onOpenChange, goal = {} }) => {
   });
 
   async function onSubmit(data) {
-    await addGoalTransaction(_id, data);
-    onOpenChange(false);
-    form.reset();
+    try {
+      await addGoalTransaction(_id, data);
+      toast.success("Saving added successfully.");
+      onOpenChange(false);
+      form.reset();
+    } catch (error) {
+      toast.error("Add saving failed, Please try again.");
+    }
   }
 
   const savingsAmount = form.watch("amount");

@@ -3,6 +3,7 @@ import { format } from "date-fns";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import z from "zod";
+import { toast } from "react-toastify";
 
 import useTransactionStore from "@/stores/transactionStore";
 
@@ -101,9 +102,14 @@ export default function AddTransactionDialog({ open, onOpenChange }) {
   });
 
   async function onSubmit(data) {
-    await addTransaction({ ...data, date: data.date.toISOString() });
-    onOpenChange(false);
-    form.reset();
+    try {
+      await addTransaction({ ...data, date: data.date.toISOString() });
+      toast.success("Tranction added successfully.");
+      onOpenChange(false);
+      form.reset();
+    } catch (error) {
+      toast.error("Add tranction failed, Please try again.");
+    }
   }
 
   const transactionType = form.watch("type");

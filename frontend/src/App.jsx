@@ -1,7 +1,8 @@
 import { lazy } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { ToastContainer } from "react-toastify";
 
-import { ThemeProvider } from "@/context/themeContext";
+import { ThemeProvider, useTheme } from "@/context/themeContext";
 
 const PublicRoutes = lazy(() => import("@/utils/PublicRoutes"));
 const ProtectedRoutes = lazy(() => import("@/utils/ProtectedRoutes"));
@@ -17,9 +18,16 @@ const Home = lazy(() => import("@/pages/dashboard/Home"));
 const Goals = lazy(() => import("@/pages/dashboard/Goals"));
 const Finances = lazy(() => import("@/pages/dashboard/Finances"));
 
+function Toast() {
+  const { theme } = useTheme();
+
+  return <ToastContainer theme={theme} />;
+}
+
 const App = () => {
   return (
     <ThemeProvider>
+      <Toast />
       <Router>
         <Routes>
           <Route element={<PublicRoutes />}>

@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useGoogleLogin } from "@react-oauth/google";
 import { LoaderCircle } from "lucide-react";
+import { toast } from "react-toastify";
 
 import useAuthStore from "@/stores/authStore";
 
@@ -23,10 +24,12 @@ export default function GoogleLogin() {
       const response = await googleAuth(res.code);
       const { user, token } = response.data;
 
+      toast.success("Login successfully.");
       localStorage.setItem("token", token);
       login(user);
       navigate("/");
     } catch (error) {
+      toast.error("Google login failed, Please try again.");
       console.error("Google login error:", error);
     } finally {
       setIsConnectingToGoogle(false);

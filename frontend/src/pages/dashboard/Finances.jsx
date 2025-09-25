@@ -7,6 +7,7 @@ import {
   ArrowDownUp,
   LoaderCircle,
 } from "lucide-react";
+import { toast } from "react-toastify";
 
 import useTransactionStore from "@/stores/transactionStore";
 
@@ -65,7 +66,11 @@ const Finances = () => {
   }
 
   useEffect(() => {
-    fetchTransactions(params);
+    try {
+      fetchTransactions(params);
+    } catch (error) {
+      toast.error("Fetch transactions failed, Please try again.");
+    }
   }, [params]);
 
   const totalIncome = transactions

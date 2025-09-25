@@ -6,6 +6,7 @@ import {
   ArrowDownUp,
   LoaderCircle,
 } from "lucide-react";
+import { toast } from "react-toastify";
 
 import useGoalStore from "@/stores/goalStore";
 
@@ -63,7 +64,11 @@ const Goals = () => {
   }
 
   useEffect(() => {
-    fetchGoals(params);
+    try {
+      fetchGoals(params);
+    } catch (error) {
+      toast.error("Fetch goals failed, Please try again.");
+    }
   }, [params]);
 
   return (

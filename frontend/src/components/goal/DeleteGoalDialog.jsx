@@ -1,4 +1,5 @@
 import { AlertTriangle, Trash2 } from "lucide-react";
+import { toast } from "react-toastify";
 
 import useGoalStore from "@/stores/goalStore";
 
@@ -22,7 +23,12 @@ const DeleteGoalDialog = ({ open, onOpenChange, goal = {} }) => {
   const deleteGoal = useGoalStore((state) => state.deleteGoal);
 
   async function handleDeleteGoal() {
-    await deleteGoal(_id);
+    try {
+      await deleteGoal(_id);
+      toast.success("Goal deleted successfully.");
+    } catch (error) {
+      toast.error("Delete goal failed, Please try again.");
+    }
     onOpenChange(false);
   }
 
