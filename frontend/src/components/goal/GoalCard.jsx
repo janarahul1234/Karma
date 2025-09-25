@@ -1,0 +1,188 @@
+import { useState } from "react";
+import { Clock, CheckCircle, Edit, IndianRupee, Trash2 } from "lucide-react";
+
+import { formatAmount } from "@/utils/helper";
+import { cn } from "@/lib/utils";
+
+import { GoalStatus } from "@/constants";
+
+import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Progress } from "@/components/ui/progress";
+import { Button } from "@/components/ui/button";
+import AddSavingsDialog from "@/components/goal/AddSavingsDialog";
+import GoalFormDialog from "@/components/goal/GoalFormDialog";
+import DeleteGoalDialog from "@/components/goal/DeleteGoalDialog";
+
+const GoalCard = ({ goal = {} }) => {
+  const {
+    name,
+    category,
+    targetDate,
+    targetAmount,
+    savedAmount,
+    progress,
+    imageUrl,
+    status,
+  } = goal;
+
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const [isAddSavingsDialogOpen, setIsAddSavingsDialogOpen] = useState(false);
+
+  function handleEditGoalDialog() {
+    setIsEditDialogOpen(true);
+  }
+
+  function handleDeleteGoalDialog() {
+    setIsDeleteDialogOpen(true);
+  }
+
+  function handleAddSavingsGoalDialog() {
+    setIsAddSavingsDialogOpen(true);
+  }
+
+  const remaining = targetAmount - savedAmount;
+
+  const oneDay = 1000 * 60 * 60 * 24;
+  const daysLeft = Math.ceil(
+    (new Date(targetDate).getTime() - new Date().getTime()) / oneDay
+  );
+
+  const isGoalCompleted = status === GoalStatus.COMPLETED;
+
+  return (
+    <>
+      <Card className="group shadow-none overflow-hidden transition-all duration-300 hover:shadow-lg hover:shadow-black/10">
+        <div className="bg-muted aspect-16/9 overflow-hidden">
+          <img
+            src={imageUrl}
+            alt={name}
+            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+          />
+        </div>
+
+        <CardHeader className="pt-4 border-0 grow flex-nowrap items-start">
+          <div>
+            <CardTitle className="text-xl">{name}</CardTitle>
+            <p className="text-muted-foreground text-sm capitalize">
+              {category}
+            </p>
+          </div>
+          <StatusBadge status={status} />
+        </CardHeader>
+
+        <CardContent className="grow-0 space-y-4">
+          <div className="space-y-2">
+            <div className="flex justify-between text-sm">
+              <span className="text-muted-foreground">Progress</span>
+              <span className="font-semibold">{progress.toFixed(1)}%</span>
+            </div>
+            <Progress value={progress} className="h-3" />
+            <div className="flex justify-between text-xs text-muted-foreground">
+              <span>{formatAmount(savedAmount)} saved</span>
+              <span>{formatAmount(targetAmount)} goal</span>
+            </div>
+          </div>
+
+          <div className="bg-muted/50 grid grid-cols-2 gap-4 text-center py-4 rounded-lg">
+            <div>
+              <div className="text-destructive font-semibold">
+                {formatAmount(remaining)}
+              </div>
+              <div className="text-muted-foreground text-sm">Remaining</div>
+            </div>
+            <div>
+              <div
+                className={cn(
+                  daysLeft < 0 ? "text-destructive" : "text-primary",
+                  "font-semibold"
+                )}
+              >
+                {daysLeft} days
+              </div>
+              <div className="text-muted-foreground text-sm">Left</div>
+            </div>
+          </div>
+
+          <div className="flex gap-2">
+            <Button
+              variant="outline"
+              className="w-full"
+              onClick={handleAddSavingsGoalDialog}
+              disabled={isGoalCompleted}
+            >
+              <IndianRupee /> Add Savings
+            </Button>
+            <Button
+              variant="outline"
+              className="w-full gap-2.5"
+              onClick={handleEditGoalDialog}
+              disabled={isGoalCompleted}
+            >
+              <Edit /> Edit
+            </Button>
+            <Button
+              size="icon"
+              variant="outline"
+              className="text-muted-foreground hover:text-destructive"
+              onClick={handleDeleteGoalDialog}
+            >
+              <Trash2 className="opacity-100" />
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Dialogs */}
+      <AddSavingsDialog
+        open={isAddSavingsDialogOpen}
+        onOpenChange={setIsAddSavingsDialogOpen}
+        goal={goal}
+      />
+
+      <GoalFormDialog
+        open={isEditDialogOpen}
+        onOpenChange={setIsEditDialogOpen}
+        goal={goal}
+      />
+
+      <DeleteGoalDialog
+        open={isDeleteDialogOpen}
+        onOpenChange={setIsDeleteDialogOpen}
+        goal={goal}
+      />
+    </>
+  );
+};
+
+function StatusBadge({ status }) {
+  const variants = {
+    [GoalStatus.ACTIVE]: {
+      icon: Clock,
+      label: "Active",
+      variant: "info",
+    },
+    [GoalStatus.COMPLETED]: {
+      icon: CheckCircle,
+      label: "Completed",
+      variant: "success",
+    },
+  };
+
+  const Icon = variants[status].icon;
+
+  return (
+    <Badge
+      shape="circle"
+      variant={variants[status].variant}
+      appearance="outline"
+      className="flex-shrink-0 mt-1"
+    >
+      <Icon />
+      {variants[status].label}
+    </Badge>
+  );
+}
+
+export default GoalCard;
