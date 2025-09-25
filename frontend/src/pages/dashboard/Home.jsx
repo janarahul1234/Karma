@@ -70,7 +70,7 @@ const Home = () => {
     .reduce((sum, t) => sum + t.amount, 0);
 
   const totalExpenses = transactions
-    .filter((t) => t.type === TransactionTypes.INCOME || t.type === "saving")
+    .filter((t) => t.type === TransactionTypes.EXPENSE || t.type === "saving")
     .reduce((sum, t) => sum + t.amount, 0);
 
   const netIncome = totalIncome - totalExpenses;
