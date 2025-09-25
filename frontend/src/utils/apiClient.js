@@ -3,7 +3,7 @@ import { BASE_URL } from "@/utils/apiEndpoints";
 
 const apiClient = axios.create({
   baseURL: BASE_URL,
-  timeout: 5000,
+  timeout: 10000,
 });
 
 // Request Interceptor
